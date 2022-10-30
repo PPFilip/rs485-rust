@@ -4,12 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-tokio-modbus = "0.5.3"
-tokio = { version = "1.21.2", features = ["full"] }
-ieee754 = "*"
-log = "*"
-stderrlog = "*"
-ux = "*"
-tokio-postgres = "*"
-futures = "*"
+tokio-modbus = "0.5"
+tokio = { version = "1", features = ["full"] }
+ieee754 = "0.2"
+log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"]}
+stderrlog = "0.5"
+ux = "0.1"
+tokio-postgres = "0.7"
+futures = "0.3"
 config = "0.13.2"

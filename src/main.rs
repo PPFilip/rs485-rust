@@ -137,7 +137,6 @@ async fn get_measurements(modbus_conn_string: String, device_id: u8) -> Result<M
 
 /// write results to psql
 async fn write_to_psql(psql_conn_string: String, measurement: Measurement) -> Result<(), Box<dyn std::error::Error>> {
-    extern crate tokio_postgres;
     use tokio_postgres::{NoTls};
 
     let (client, connection) = tokio_postgres::connect(&psql_conn_string, NoTls).await?;
@@ -147,7 +146,6 @@ async fn write_to_psql(psql_conn_string: String, measurement: Measurement) -> Re
             error!("connection error: {}", e);
         }
     });
-
     client.execute("INSERT INTO energy \
         (device_id, device_timestamp, frequency, U1, I1, \
         Pt, Qt, St, Pft, int_temp, \
@@ -166,12 +164,16 @@ async fn write_to_psql(psql_conn_string: String, measurement: Measurement) -> Re
 #[tokio::main(flavor = "current_thread")]
 pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     use config::Config;
-    stderrlog::new().module(module_path!()).verbosity(log::LevelFilter::Debug).init().unwrap();
+    use std::str::FromStr;
 
     let settings = Config::builder()
         .add_source(config::File::with_name("Settings"))
         .build()
         .unwrap();
+
+    let log_level_str = settings.get_string("log_level").unwrap();
+    let log_level = Level::from_str(&log_level_str).unwrap();
+    stderrlog::new().module(module_path!()).verbosity(log_level).init().unwrap();
 
     let modbus_addr: String = settings.get_string("modbus_server").unwrap();
     let modbus_device_id: u8 = settings.get_int("modbus_device_id").unwrap() as u8;
