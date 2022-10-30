@@ -19,7 +19,12 @@ CREATE TABLE "energy" (
     c4_mantissa INTEGER,
     c4_val REAL,
     c4_x10 REAL,
-    c4_float REAL
+    c4_float REAL,
+    x3_exp INTEGER,
+    x3_mantissa INTEGER,
+    x3_val REAL,
+    x3_x10 REAL,
+    x3_float REAL
 );
 
 SELECT create_hypertable('energy', 'db_timestamp',   chunk_time_interval => INTERVAL '1 day');
