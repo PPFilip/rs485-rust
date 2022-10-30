@@ -1,0 +1,15 @@
+[package]
+name = "rs485-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio-modbus = "0.5.3"
+tokio = { version = "1.21.2", features = ["full"] }
+ieee754 = "*"
+log = "*"
+stderrlog = "*"
+ux = "*"
+tokio-postgres = "*"
+futures = "*"
+config = "0.13.2"
