@@ -75,6 +75,15 @@ pub fn get_t7(vec:Vec<u16>) -> i32 {
     sign_dir * cap
 }
 
+/// Returns Unigned Value (16 bit), 2 decimal places
+/// Based on 7M.24 modbus data types
+/// Example: 123.45 stored as 123.45 = 3039(16)
+pub fn get_t16(vec:Vec<u16>) -> f32 {
+    assert_eq!(vec.len(), 1);
+
+    (vec[0] as f32) / 100.0
+}
+
 
 /// Returns Signed Value (16 bit), 2 decimal places
 /// Based on 7M.24 modbus data types

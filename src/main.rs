@@ -24,6 +24,8 @@ struct Measurement {
     st: f32,
     pft: i32,
     temp: f32,
+    u1_thd: f32,
+    i1_thd: f32,
     c1: Counter,
     c4: Counter,
     x3: Counter
@@ -72,6 +74,15 @@ async fn get_measurements(modbus_conn_string: String, device_id: u8) -> Result<M
     let raw_temp = ctx.read_input_registers(181, 1).await?;
     let m_temp = get_t17(raw_temp.clone());
     debug!("Internal temperature is '{:?}' => '{:?}'", raw_temp, m_temp);
+
+    let raw_u1_thd = ctx.read_input_registers(182, 1).await?;
+    let m_u1_thd = get_t17(raw_u1_thd.clone());
+    debug!("U1 THD% is '{:?}' => '{:?}'", raw_u1_thd, m_u1_thd);
+
+    let raw_i1_thd = ctx.read_input_registers(188, 1).await?;
+    let m_i1_thd = get_t17(raw_i1_thd.clone());
+    debug!("I1 THD% is '{:?}' => '{:?}'", raw_i1_thd, m_i1_thd);
+
 
     //
     // C1 (MID certified) - Import Active Energy
@@ -169,6 +180,8 @@ async fn get_measurements(modbus_conn_string: String, device_id: u8) -> Result<M
         frequency: m_freq,
         u1: m_u1,
         i1: m_i1,
+        u1_thd: m_u1_thd,
+        i1_thd: m_i1_thd,
         pt: m_pt,
         qt: m_qt,
         st: m_st,
@@ -196,12 +209,14 @@ async fn write_to_psql(psql_conn_string: String, measurement: Measurement) -> Re
     client.execute("INSERT INTO energy \
         (device_id, device_timestamp, frequency, U1, I1, \
         Pt, Qt, St, Pft, int_temp, \
+        u1_thd, i1_thd, \
         c1_exp, c1_mantissa, c1_val, c1_x10, c1_float,\
         c4_exp, c4_mantissa, c4_val, c4_x10, c4_float,\
         x3_exp, x3_mantissa, x3_val, x3_x10, x3_float) \
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)",
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)",
                    &[&measurement.device_id, &measurement.device_timestamp, &measurement.frequency, &measurement.u1, &measurement.i1,
                        &measurement.pt, &measurement.qt, &measurement.st, &measurement.pft, &measurement.temp,
+                       &measurement.u1_thd, &measurement.i1_thd,
                        &measurement.c1.exp, &measurement.c1.mantissa, &measurement.c1.val, &measurement.c1.x10, &measurement.c1.float,
                        &measurement.c4.exp, &measurement.c4.mantissa, &measurement.c4.val, &measurement.c4.x10, &measurement.c4.float,
                        &measurement.x3.exp, &measurement.x3.mantissa, &measurement.x3.val, &measurement.x3.x10, &measurement.x3.float])
