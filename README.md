@@ -6,7 +6,7 @@ This program reads information from a Finder 7M.24 power meter connected to a RS
 - Set up psql database (timescale support recommended)
 - Checkout repo
 - `cargo build`
-- Edit config
+- Edit config based on Settings.toml.example
 - Run with cron in interval you like
     
 # Reference material
