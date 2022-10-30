@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 
 /// Returns Unsigned Value (16 bit)
 /// Based on 7M.24 modbus data types
