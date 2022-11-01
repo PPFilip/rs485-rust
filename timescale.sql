@@ -30,6 +30,3 @@ CREATE TABLE "energy" (
 );
 
 SELECT create_hypertable('energy', 'db_timestamp',   chunk_time_interval => INTERVAL '1 day');
-
-ALTER TABLE "energy" ADD COLUMN U1_thd REAL;
-ALTER TABLE "energy" ADD COLUMN I1_thd REAL;
