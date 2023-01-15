@@ -122,8 +122,8 @@ impl ModbusConversions for Vec<u16> {
 macro_rules! read_finder_register {
     ($ctx:ident, $name:expr, $addr:expr, $count:expr, $func:ident) => {{
         let tmp_vec: Vec<u16> = $ctx.read_input_registers($addr, $count).await?;
-        let tmp_val = tmp_vec.clone().$func();
-        debug!("{} is {:?}: {:?}", $name, tmp_vec, tmp_val);
+        let tmp_val = tmp_vec.$func();
+        debug!("{} is {:04X?}: {}", $name, tmp_vec, tmp_val);
         tmp_val
     }};
 }
